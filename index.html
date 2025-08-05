@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digit Collapse Sum</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+      background: #f9f9f9;
+    }
+    h1 {
+      color: red;
+    }
+    input[type="text"] {
+      padding: 10px;
+      font-size: 18px;
+      width: 100%;
+      max-width: 400px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .start-btn {
+      background-color: blue;
+    }
+    .clear-btn {
+      background-color: red;
+    }
+    .result-box {
+      margin-top: 30px;
+    }
+    .result {
+      background: #fff;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+      text-align: left;
+    }
+    .step {
+      font-family: monospace;
+      font-size: 20px;
+      color: blue;
+    }
+    .toggle-box {
+      margin: 20px 0;
+      font-size: 16px;
+    }
+    .toggle-box input {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Digit Collapse Sum (JavaScript)</h1>
+
+  <input type="text" id="digitInput" placeholder="Enter 4–14 digit number" />
+  
+  <div class="toggle-box">
+    <label>
+      <input type="checkbox" id="toggleZero" />
+      Treat 0 as 1 (0 = 1)
+    </label>
+  </div>
+
+  <button class="start-btn" onclick="startCollapse()">Start</button>
+  <button class="clear-btn" onclick="clearResults()">Clear All</button>
+
+  <div class="result-box" id="resultBox"></div>
+
+  <script>
+    const inputField = document.getElementById('digitInput');
+    const resultBox = document.getElementById('resultBox');
+    const toggleZero = document.getElementById('toggleZero');
+
+    // Load saved results
+    let allResults = JSON.parse(localStorage.getItem('digitCollapseResults')) || [];
+    displayResults();
+
+    function startCollapse() {
+      const input = inputField.value.trim();
+      const treatZeroAsOne = toggleZero.checked;
+
+      if (!/^\d{4,14}$/.test(input)) {
+        alert('Please enter a valid 4 to 14 digit number.');
+        return;
+      }
+
+      const steps = [input];
+      let current = input;
+
+      while (current.length > 1) {
+        let next = '';
+        for (let i = 0; i < current.length - 1; i++) {
+          const a = treatZeroAsOne && current[i] === '0' ? 1 : parseInt(current[i]);
+          const b = treatZeroAsOne && current[i + 1] === '0' ? 1 : parseInt(current[i + 1]);
+          const sum = a + b;
+          next += (sum % 10).toString();
+        }
+        steps.push(next);
+        current = next;
+      }
+
+      allResults.push(steps);
+      localStorage.setItem('digitCollapseResults', JSON.stringify(allResults));
+
+      inputField.value = '';
+      displayResults();
+    }
+
+    function clearResults() {
+      localStorage.removeItem('digitCollapseResults');
+      allResults = [];
+      displayResults();
+    }
+
+    function displayResults() {
+      resultBox.innerHTML = '';
+      allResults.forEach(steps => {
+        const container = document.createElement('div');
+        container.className = 'result';
+        steps.forEach(step => {
+          const line = document.createElement('div');
+          line.className = 'step';
+          line.textContent = step;
+          container.appendChild(line);
+        });
+        resultBox.appendChild(container);
+      });
+    }
+  </script>
+
+</body>
+</html>

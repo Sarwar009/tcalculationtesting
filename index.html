@@ -67,7 +67,7 @@
 
   <h1>Digit Collapse Sum (JavaScript)</h1>
 
-  <input type="text" id="digitInput" placeholder="Enter 4–14 digit number" />
+  <input type="text" id="digitInput" placeholder="Enter 4–30 digit number" />
   
   <div class="toggle-box">
     <label>
@@ -94,8 +94,8 @@
       const input = inputField.value.trim();
       const treatZeroAsOne = toggleZero.checked;
 
-      if (!/^\d{4,14}$/.test(input)) {
-        alert('Please enter a valid 4 to 14 digit number.');
+      if (!/^\d{4,30}$/.test(input)) {
+        alert('Please enter a valid 4 to 30 digit number.');
         return;
       }
 
